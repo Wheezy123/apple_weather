@@ -37,7 +37,7 @@ A Ruby on Rails application that provides weather forecasts for user-submitted a
 
 ### 1. Clone and Install
 ```bash
-git clone <repository-url>
+git clone https://github.com/Wheezy123/apple_weather.git
 cd apple_weather
 bundle install
 ```
