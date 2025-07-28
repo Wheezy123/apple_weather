@@ -52,9 +52,9 @@
       <% end %>
 
       <% if @forecast %>
-        <div class="card">
+        <div class="card mb-4">
           <div class="card-header">
-            <h2 class="mb-0">Weather for <%= @address.full_address %></h2>
+            <h2 class="mb-0">Current Weather for <%= @address.full_address %></h2>
             
             <% if @from_cache %>
               <small class="badge bg-info">
@@ -86,6 +86,31 @@
             </div>
           </div>
         </div>
+
+        <% if @forecast.extended_forecast.any? %>
+          <div class="card">
+            <div class="card-header">
+              <h3 class="mb-0">Extended Forecast</h3>
+            </div>
+            <div class="card-body">
+              <div class="row">
+                <% @forecast.extended_forecast.each do |daily_forecast| %>
+                  <div class="col-md-2 col-sm-4 mb-3">
+                    <div class="text-center p-3 border rounded">
+                      <h6 class="mb-2"><%= Date.parse(daily_forecast['date']).strftime('%a %m/%d') %></h6>
+                      <p class="mb-1 text-capitalize small"><%= daily_forecast['description'] %></p>
+                      <div class="mb-1">
+                        <small class="text-danger"><%= daily_forecast['high_temperature'].round %>°</small>
+                        <span class="mx-1">/</span>
+                        <small class="text-primary"><%= daily_forecast['low_temperature'].round %>°</small>
+                      </div>
+                    </div>
+                  </div>
+                <% end %>
+              </div>
+            </div>
+          </div>
+        <% end %>
       <% end %>
     </div>
   </div>

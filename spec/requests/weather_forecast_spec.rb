@@ -1,8 +1,12 @@
 require 'rails_helper'
 
 RSpec.describe "WeatherForecasts", type: :request do
+  let(:weather_api_url) { "http://api.openweathermap.org/data/2.5/weather" }
+  let(:forecast_api_url) { "http://api.openweathermap.org/data/2.5/forecast" }
+
   before do
-    stub_request(:get, /api.openweathermap.org/)
+    stub_request(:get, weather_api_url)
+      .with(query: hash_including(zip: "78701"))
       .to_return(
         status: 200,
         body: {
@@ -16,20 +20,34 @@ RSpec.describe "WeatherForecasts", type: :request do
         headers: { 'Content-Type' => 'application/json' }
       )
     
-    stub_request(:get, /nominatim.openstreetmap.org/)
+    stub_request(:get, forecast_api_url)
+      .with(query: hash_including(zip: "78701"))
       .to_return(
         status: 200,
-        body: [{
-          lat: "30.2672",
-          lon: "-97.7431"
-        }].to_json,
+        body: {
+          list: [
+            {
+              dt: Time.current.to_i,
+              main: { temp: 80.0 },
+              weather: [{ description: "sunny" }]
+            },
+            {
+              dt: (Time.current + 1.day).to_i,
+              main: { temp: 78.0 },
+              weather: [{ description: "cloudy" }]
+            }
+          ]
+        }.to_json,
         headers: { 'Content-Type' => 'application/json' }
       )
   end
 
+  let(:root_path_url) { root_path }
+  let(:weather_forecast_path_url) { weather_forecast_index_path }
+
   describe "GET /" do
     it "displays the weather form" do
-      get root_path
+      get root_path_url
       expect(response).to have_http_status(:success)
       expect(response.body).to include("Weather Forecast")
       expect(response.body).to include("Get Weather")
@@ -51,7 +69,7 @@ RSpec.describe "WeatherForecasts", type: :request do
     context "with valid address" do
       it "creates address and fetches weather" do
         expect {
-          post weather_forecast_index_path, params: valid_params
+          post weather_forecast_path_url, params: valid_params
         }.to change(Address, :count).by(1)
         
         expect(response).to have_http_status(:success)
@@ -59,14 +77,16 @@ RSpec.describe "WeatherForecasts", type: :request do
         expect(response.body).to include("75°F")
       end
 
-      it "creates weather forecast record" do
+      it "creates weather forecast record with extended forecast data" do
         expect {
-          post weather_forecast_index_path, params: valid_params
+          post weather_forecast_path_url, params: valid_params
         }.to change(WeatherForecast, :count).by(1)
         
         forecast = WeatherForecast.last
         expect(forecast.zip_code).to eq("78701")
         expect(forecast.current_temperature).to eq(75.0)
+        expect(forecast.forecast_data).to be_present
+        expect(forecast.extended_forecast).to be_an(Array)
       end
     end
 
@@ -76,7 +96,7 @@ RSpec.describe "WeatherForecasts", type: :request do
       end
 
       it "uses cached forecast without API call" do
-        post weather_forecast_index_path, params: valid_params
+        post weather_forecast_path_url, params: valid_params
         
         expect(response).to have_http_status(:success)
         expect(response.body).to include("From cache")
@@ -98,7 +118,7 @@ RSpec.describe "WeatherForecasts", type: :request do
 
       it "does not create address and shows form again" do
         expect {
-          post weather_forecast_index_path, params: invalid_params
+          post weather_forecast_path_url, params: invalid_params
         }.not_to change(Address, :count)
         
         expect(response).to have_http_status(:success)

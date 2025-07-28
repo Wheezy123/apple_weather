@@ -16,4 +16,9 @@ class WeatherForecast < ApplicationRecord
   def from_cache?
     persisted? && !cache_expired?
   end
+
+  def extended_forecast
+    return [] unless forecast_data.present?
+    JSON.parse(forecast_data)
+  end
 end

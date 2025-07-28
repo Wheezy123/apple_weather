@@ -44,6 +44,7 @@ class WeatherForecastController < ApplicationController
   def fetch_and_cache_weather(zip_code)
     weather_service = WeatherService.new
     weather_data = weather_service.current_weather_by_zip(zip_code)
+    extended_forecast_data = weather_service.extended_forecast_by_zip(zip_code)
     
     return nil unless weather_data
     
@@ -53,6 +54,7 @@ class WeatherForecastController < ApplicationController
       high_temperature: weather_data[:high_temperature],
       low_temperature: weather_data[:low_temperature],
       description: weather_data[:description],
+      forecast_data: extended_forecast_data.to_json,
       cached_at: Time.current
     )
   rescue => e
