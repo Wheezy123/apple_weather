@@ -44,8 +44,6 @@ gem "bootsnap", require: false
 # HTTP client for API requests
 gem "httparty"
 
-# Geocoding for address to coordinates conversion
-gem "geocoder"
 
 # Environment variable management
 gem "dotenv-rails"
@@ -57,12 +55,19 @@ group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
   gem "debug", platforms: %i[ mri windows ]
   
+  # Pry for debugging
+  gem "pry-rails"
+  gem "pry-byebug"
+  
   # Testing framework enhancements
   gem "rspec-rails"
   gem "factory_bot_rails"
   
   # HTTP request mocking for tests
   gem "webmock"
+  
+  # Model validation matchers
+  gem "shoulda-matchers"
 end
 
 group :development do

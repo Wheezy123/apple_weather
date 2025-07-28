@@ -1,11 +1,11 @@
 FactoryBot.define do
   factory :address do
-    street_address { "MyString" }
-    city { "MyString" }
-    state { "MyString" }
-    zip_code { "MyString" }
-    latitude { "9.99" }
-    longitude { "9.99" }
-    geocoded_at { "2025-07-26 10:23:51" }
+    street_address { "123 Main St" }
+    city { "Austin" }
+    state { "TX" }
+    zip_code { "78701" }
+    latitude { nil }
+    longitude { nil }
+    geocoded_at { nil }
   end
 end
