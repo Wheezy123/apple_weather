@@ -22,7 +22,6 @@
 #   - API failure: displays user-friendly error message
 #   - Network timeout: logs error and shows fallback message
 class WeatherForecastController < ApplicationController
-
   # GET /
   # Displays the weather forecast form with empty address object.
   #
@@ -70,24 +69,22 @@ class WeatherForecastController < ApplicationController
     @address = Address.new(address_params)
     @forecast = nil
     @from_cache = false
-    
+
     if @address.valid? && @address.save
       zip_code = @address.zip_code
-      
+
       cached_forecast = WeatherForecast.cached_forecast_for(zip_code)
-      
+
       if cached_forecast
         @forecast = cached_forecast
         @from_cache = true
       else
         @forecast = fetch_and_cache_weather(zip_code)
         @from_cache = false
-        
-        unless @forecast
-          flash.now[:error] = "Unable to retrieve weather data. Please try again later."
-        end
+
+        flash.now[:error] = 'Unable to retrieve weather data. Please try again later.' unless @forecast
       end
-      
+
       render :index
     else
       @forecast = nil
@@ -131,9 +128,9 @@ class WeatherForecastController < ApplicationController
     weather_service = WeatherService.new
     weather_data = weather_service.current_weather_by_zip(zip_code)
     extended_forecast_data = weather_service.extended_forecast_by_zip(zip_code)
-    
+
     return nil unless weather_data
-    
+
     WeatherForecast.create!(
       zip_code: zip_code,
       current_temperature: weather_data[:current_temperature],
@@ -143,7 +140,7 @@ class WeatherForecastController < ApplicationController
       forecast_data: extended_forecast_data.to_json,
       cached_at: Time.current
     )
-  rescue => e
+  rescue StandardError => e
     Rails.logger.error "Weather fetch error for ZIP #{zip_code}: #{e.message}"
     Rails.logger.error e.backtrace.join("\n") if Rails.env.development?
     nil

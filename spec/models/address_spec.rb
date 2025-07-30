@@ -2,7 +2,7 @@ require 'rails_helper'
 
 RSpec.describe Address, type: :model do
   subject(:address) { build(:address, attributes) }
-  
+
   let(:valid_attributes) do
     {
       street_address: '123 Main St',
@@ -11,7 +11,7 @@ RSpec.describe Address, type: :model do
       zip_code: '78701'
     }
   end
-  
+
   let(:attributes) { valid_attributes }
 
   describe 'validations' do
@@ -25,7 +25,6 @@ RSpec.describe Address, type: :model do
     it { is_expected.to validate_presence_of(:zip_code) }
     it { is_expected.to validate_length_of(:zip_code).is_at_least(5) }
     it { is_expected.to validate_numericality_of(:zip_code).only_integer }
-
   end
 
   describe '#full_address' do
@@ -33,5 +32,4 @@ RSpec.describe Address, type: :model do
       expect(address.full_address).to eq('123 Main St, Austin, TX 78701')
     end
   end
-
 end

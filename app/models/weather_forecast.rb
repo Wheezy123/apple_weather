@@ -57,6 +57,7 @@ class WeatherForecast < ApplicationRecord
 
   def extended_forecast
     return [] unless forecast_data.present?
+
     JSON.parse(forecast_data)
   end
 end

@@ -10,29 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_07_28_203844) do
+ActiveRecord::Schema[7.1].define(version: 20_250_728_203_844) do
   # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+  enable_extension 'plpgsql'
 
-  create_table "addresses", force: :cascade do |t|
-    t.string "street_address"
-    t.string "city"
-    t.string "state"
-    t.string "zip_code"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+  create_table 'addresses', force: :cascade do |t|
+    t.string 'street_address'
+    t.string 'city'
+    t.string 'state'
+    t.string 'zip_code'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
   end
 
-  create_table "weather_forecasts", force: :cascade do |t|
-    t.string "zip_code"
-    t.decimal "current_temperature"
-    t.decimal "high_temperature"
-    t.decimal "low_temperature"
-    t.string "description"
-    t.datetime "cached_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.text "forecast_data"
+  create_table 'weather_forecasts', force: :cascade do |t|
+    t.string 'zip_code'
+    t.decimal 'current_temperature'
+    t.decimal 'high_temperature'
+    t.decimal 'low_temperature'
+    t.string 'description'
+    t.datetime 'cached_at'
+    t.datetime 'created_at', null: false
+    t.datetime 'updated_at', null: false
+    t.text 'forecast_data'
   end
-
 end
